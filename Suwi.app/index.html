@@ -266,16 +266,29 @@ button,input,select,textarea{font-family:var(--font)}
     <div class="ni" onclick="nav('mood',this)" id="n-mood"><i class="ti ti-heart"></i> Mood tracker</div>
   </div>
   <div class="sbb">
-    <div class="urow">
+    <div class="urow" onclick="toggleUserMenu()" style="cursor:pointer;border-radius:var(--r2);transition:var(--tr);position:relative" id="userRow">
       <div class="uav" id="uav">A</div>
-      <div style="min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="uname">Alex</div><div style="font-size:11px;color:var(--t3)" id="ugoal">Loading...</div></div>
+      <div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="uname">Alex</div><div style="font-size:11px;color:var(--t3)" id="ugoal">Loading...</div></div>
+      <i class="ti ti-chevron-up" id="userChevron" style="font-size:14px;color:var(--t3);transition:var(--tr)"></i>
+    </div>
+    <div id="userMenu" style="display:none;background:var(--sf2);border:1px solid var(--bd2);border-radius:var(--r2);padding:4px;margin-bottom:8px">
+      <div onclick="nav('mood',document.getElementById('n-mood'))" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r3);cursor:pointer;font-size:13px;color:var(--t2);transition:var(--tr)" onmouseover="this.style.background='var(--sf3)'" onmouseout="this.style.background='transparent'">
+        <i class="ti ti-user" style="font-size:15px"></i> Profile
+      </div>
+      <div onclick="nav('analytics',document.getElementById('n-analytics'))" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r3);cursor:pointer;font-size:13px;color:var(--t2);transition:var(--tr)" onmouseover="this.style.background='var(--sf3)'" onmouseout="this.style.background='transparent'">
+        <i class="ti ti-chart-bar" style="font-size:15px"></i> My stats
+      </div>
+      <div style="height:1px;background:var(--bd);margin:4px 0"></div>
+      <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r3);cursor:pointer;font-size:13px;color:var(--danger);transition:var(--tr)" onmouseover="this.style.background='rgba(224,85,85,0.08)'" onmouseout="this.style.background='transparent'">
+        <i class="ti ti-logout" style="font-size:15px"></i> Sign out
+      </div>
     </div>
     <div class="tth" onclick="toggleDark()">
       <i class="ti ti-moon" style="font-size:16px"></i>
       <span style="font-size:13px">Dark mode</span>
       <div class="tpill" id="DT"><div class="tdot"></div></div>
     </div>
-    <div class="logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:16px"></i><span style="font-size:13px">Sign out</span></div>
+
   </div>
 </div>
 
@@ -746,7 +759,14 @@ function renderTasks(f) {
   el.innerHTML = list.map(t => {
     const tg = TM[t.tag] || TM.low;
     const db = (t.delay_count || 0) >= 2 ? `<span class="tag-delay">⚠️ ${t.delay_count}×</span>` : '';
-    return `<div class="ti${t.done ? ' done' : ''}" onclick="togTask('${t.id}')"><div class="tcheck">${t.done ? '<i class="ti ti-check" style="font-size:10px;color:#fff"></i>' : ''}</div><div style="flex:1;min-width:0"><span class="ttl">${t.text}</span>${db}</div><span class="tag ${t.done ? 'tag-d' : tg.cls}">${t.done ? 'Done' : tg.lbl}</span></div>`;
+    return `<div class="ti${t.done ? ' done' : ''}" onclick="togTask('${t.id}')">
+      <div class="tcheck">${t.done ? '<i class="ti ti-check" style="font-size:10px;color:#fff"></i>' : ''}</div>
+      <div style="flex:1;min-width:0;overflow:hidden">
+        <div style="font-size:13.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.done?'text-decoration:line-through;color:var(--t3)':''}">${t.text}</div>
+        ${db}
+      </div>
+      <span class="tag ${t.done ? 'tag-d' : tg.cls}" style="flex-shrink:0;margin-left:8px">${t.done ? 'Done' : tg.lbl}</span>
+    </div>`;
   }).join('');
 }
 
@@ -786,7 +806,16 @@ function renderWkDots() {
 function renderDashTasks() {
   const el = document.getElementById('dTList'), r = tasks.slice(0, 5);
   if (!r.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t3);padding:16px 0;text-align:center">No tasks yet</div>'; return; }
-  el.innerHTML = r.map(t => { const tg = TM[t.tag] || TM.low; return `<div class="ti${t.done ? ' done' : ''}" onclick="togTask('${t.id}')"><div class="tcheck">${t.done ? '<i class="ti ti-check" style="font-size:10px;color:#fff"></i>' : ''}</div><span class="ttl">${t.text}</span><span class="tag ${t.done ? 'tag-d' : tg.cls}">${t.done ? 'Done' : tg.lbl}</span></div>`; }).join('');
+  el.innerHTML = r.map(t => { 
+    const tg = TM[t.tag] || TM.low; 
+    return `<div class="ti${t.done ? ' done' : ''}" onclick="togTask('${t.id}')">
+      <div class="tcheck">${t.done ? '<i class="ti ti-check" style="font-size:10px;color:#fff"></i>' : ''}</div>
+      <div style="flex:1;min-width:0;overflow:hidden">
+        <div style="font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.done?'text-decoration:line-through;color:var(--t3)':'color:var(--tx)'}">${t.text}</div>
+      </div>
+      <span class="tag ${t.done ? 'tag-d' : tg.cls}" style="flex-shrink:0;margin-left:8px">${t.done ? 'Done' : tg.lbl}</span>
+    </div>`;
+  }).join('');
 }
 async function loadDashAI() {
   const done = tasks.filter(t => t.done).length, p = tasks.filter(t => !t.done).map(t => t.text).slice(0, 3).join(', ') || 'no tasks yet';
@@ -967,6 +996,26 @@ function rebuildCharts() {
     hm.innerHTML = cells.map(l => `<div class="hcell h${l}"></div>`).join('');
   }
 }
+
+// ── USER MENU ─────────────────────────────────────────
+function toggleUserMenu() {
+  const menu = document.getElementById('userMenu');
+  const chevron = document.getElementById('userChevron');
+  const isOpen = menu.style.display !== 'none';
+  menu.style.display = isOpen ? 'none' : 'block';
+  chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  const row = document.getElementById('userRow');
+  const menu = document.getElementById('userMenu');
+  if (menu && row && !row.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+    const chevron = document.getElementById('userChevron');
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
+  }
+});
 
 // ── BOOT ─────────────────────────────────────────────
 boot();
