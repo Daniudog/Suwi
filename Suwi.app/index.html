@@ -108,12 +108,12 @@ button,input,select,textarea{font-family:var(--font)}
 .ps{font-size:13px;color:var(--t2)}
 
 /* TASKS */
-.ti{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);margin-bottom:8px;cursor:pointer;transition:var(--tr)}
+.ti{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);margin-bottom:8px;cursor:pointer;transition:var(--tr);min-width:0;overflow:hidden}
 .ti:hover{border-color:var(--bd2);transform:translateX(2px)}
 .ti.done{opacity:.45}
 .tcheck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--bd3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
 .ti.done .tcheck{background:var(--ok);border-color:var(--ok)}
-.ttl{font-size:13.5px;flex:1;min-width:0}
+.ttl{font-size:13.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ti.done .ttl{text-decoration:line-through;color:var(--t3)}
 .tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
 .tag-f{background:var(--ac3);color:var(--ac)}
@@ -428,7 +428,21 @@ button,input,select,textarea{font-family:var(--font)}
 <!-- BODY DOUBLING -->
 <div class="pg" id="pg-rooms">
   <div class="ph"><div class="pt">Body doubling rooms</div><div class="ps">Work silently alongside others — proven to boost focus by up to 4×</div></div>
-  <div class="abubble" style="margin-bottom:20px"><div class="aheader"><div class="adot"></div><span class="aname">Suwi</span></div><div class="amsg">Pick a room, set your intention, and work alongside others. No talking needed — presence alone creates accountability.</div></div>
+  <div class="abubble" style="margin-bottom:20px">
+    <div class="aheader"><div class="adot"></div><span class="aname">Suwi explains body doubling</span></div>
+    <div class="amsg">
+      <strong>What is body doubling?</strong><br>
+      Body doubling is a focus technique where you work alongside another person — even silently. Research shows human presence (real or virtual) activates the brain's social accountability system, making it significantly harder to procrastinate.<br><br>
+      <strong>How to use these rooms:</strong><br>
+      1. Pick a room that matches your task type<br>
+      2. Type your intention — what you will work on<br>
+      3. Click "Focus now" — your timer starts automatically<br>
+      4. Work silently until your session ends<br><br>
+      <strong>Why it works:</strong><br>
+      Even knowing others are working creates a sense of shared accountability. Studies show productivity increases by up to 4× with body doubling. It's used widely for ADHD, procrastination, and deep work.<br><br>
+      <strong>Note:</strong> These rooms currently show active community members. Real-time multi-user rooms with live presence are coming in the next update.
+    </div>
+  </div>
   <div class="g3" id="roomGrid" style="margin-bottom:18px"></div>
   <div class="card" id="rActive" style="display:none">
     <div class="sh2r"><span class="st" id="rName">Room</span><div class="live-dot">LIVE</div></div>
@@ -519,9 +533,9 @@ button,input,select,textarea{font-family:var(--font)}
 
 <script>
 // ── CONFIG ──────────────────────────────────────────
-const API = 'http://localhost:3001/api';
-const GKEY = 'AIzaSyBtbLxFPUJLk-9_KVXcKbhIhNfHzMsGJCw';
-const GURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GKEY}`;
+const API = 'https://suwi-backend-production.up.railway.app/api';
+const GKEY = 'AIzaSyA9Hh1XA0p2yPS8RetBOJSJKBWZGIx_UGE';
+const GURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GKEY}`;
 
 // ── STATE ────────────────────────────────────────────
 let token = localStorage.getItem('suwi_token');
